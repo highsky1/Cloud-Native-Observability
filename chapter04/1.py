@@ -14,13 +14,21 @@ def configure_tracer():
 def browse():
     print("visiting the grocery store")
 
+def add_item_to_cart(item):
+    print("add {} to cart".format(item))
+
 if __name__ == "__main__":
     tracer = configure_tracer()
-    span = tracer.start_span("visit store")
-    ctx = trace.set_span_in_context(span)
-    token = context.attach(ctx)
-    span2 = tracer.start_span("browse")
-    browse()
-    span2.end()
-    context.detach(token)
-    span.end()
+    with tracer.start_as_current_span("visit store"):
+        with tracer.start_as_current_span("browse"):
+            browse()
+            with tracer.start_as_current_span("add item to cart"):
+                add_item_to_cart("orange")
+    #span = tracer.start_span("visit store")
+    #ctx = trace.set_span_in_context(span)
+    #token = context.attach(ctx)
+    #span2 = tracer.start_span("browse")
+    #browse()
+    #span2.end()
+    #context.detach(token)
+    #span.end()
