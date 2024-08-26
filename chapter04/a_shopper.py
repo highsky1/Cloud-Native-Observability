@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import requests
-from common import configure_tracer, configure_meter
+from a_common import configure_tracer, configure_meter
 from opentelemetry import context, trace
 from opentelemetry.trace import Status, StatusCode
 from opentelemetry.sdk.resources import Resource
