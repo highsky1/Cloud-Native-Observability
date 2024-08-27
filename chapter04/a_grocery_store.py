@@ -7,11 +7,32 @@ from opentelemetry.propagators.composite import CompositePropagator
 from opentelemetry.semconv.trace import HttpFlavorValues, SpanAttributes
 from opentelemetry.trace import SpanKind
 from opentelemetry.trace.propagation import tracecontext
-from a_common import configure_meter, configure_tracer, set_span_attributes_from_flask
+from a_common import (
+    configure_meter, 
+    configure_tracer, 
+    configure_logger, 
+    set_span_attributes_from_flask,
+    start_recording_memory_metrics,
+)
+from logging.config import dictConfig
 
 
 tracer = configure_tracer("grocery-store", "0.1.2")
 meter = configure_meter("grocery-store", "0.1.2")
+logger = configure_logger("grocery-store", "0.1.2")
+
+dictConfig(
+    {
+        "version": 1,
+        "handlers": {
+            "otlp": {
+                "class": "opentelemetry.sdk._logs.LoggingHandler",
+            }
+        },
+        "root": {"level": "DEBUG", "handlers": ["otlp"]},
+    }
+)
+
 
 total_duration_histo = meter.create_histogram(
     name="duration",

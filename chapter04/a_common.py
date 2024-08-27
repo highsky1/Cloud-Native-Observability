@@ -86,3 +86,6 @@ def configure_logger(name, version):
     logger.setLevel(logging.DEBUG)
     handler = LoggingHandler()
     return logger
+
+def start_recording_memory_metrics():
+    pass
