@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import requests, time
-from a_common import configure_tracer, configure_meter
+from a_common import configure_tracer, configure_meter, configure_logger
 from opentelemetry import context, trace
 from opentelemetry.trace import Status, StatusCode
 from opentelemetry.sdk.resources import Resource
@@ -30,6 +30,7 @@ def configure_tracer(name, version):
 
 tracer = configure_tracer("shopper", "0.1.2")
 meter = configure_meter("shopper", "0.1.2")
+logger = configure_logger("shopper", "0.1.2")
 
 total_duration_histo = meter.create_histogram(
     name="duration",
@@ -115,6 +116,7 @@ def add_item_to_cart(item, quantity):
             "quantity": quantity,
         }
     )
+    logger.info("add {} to cart".format(item))
     print("add {} to cart".format(item))
 
 @tracer.start_as_current_span("visit store")

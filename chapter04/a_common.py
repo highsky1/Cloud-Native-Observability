@@ -1,3 +1,4 @@
+import logging
 from flask import request
 from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
@@ -12,6 +13,16 @@ from opentelemetry.sdk.metrics.export import (
     ConsoleMetricExporter,
     PeriodicExportingMetricReader,
 )
+from opentelemetry.sdk._logs.export import ConsoleLogExporter, BatchLogRecordProcessor
+from opentelemetry.sdk._logs import LoggerProvider, LogRecord, LoggingHandler
+#from opentelemetry._logs import set_logger_provider
+#from opentelemetry.sdk.resources import Resource
+from opentelemetry._logs import (
+    set_logger_provider,
+    get_logger_provider,
+)
+#from opentelemetry._logs.severity import SeverityNumber
+
 
 def configure_meter(name, version):
     exporter = ConsoleMetricExporter()
@@ -65,3 +76,13 @@ def set_span_attributes_from_flask():
             SpanAttributes.HTTP_CLIENT_IP: request.remote_addr,
         }
     )
+
+def configure_logger(name, version):
+    provider = LoggerProvider(resource=Resource.create())
+    set_logger_provider(provider)
+    exporter = ConsoleLogExporter()
+    provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    handler = LoggingHandler()
+    return logger
