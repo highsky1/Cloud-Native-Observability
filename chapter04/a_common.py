@@ -78,7 +78,17 @@ def set_span_attributes_from_flask():
     )
 
 def configure_logger(name, version):
-    provider = LoggerProvider(resource=Resource.create())
+    local_resource = LocalMachineResourceDetector().detect()
+    resource = local_resource.merge(
+        Resource.create(
+            {
+                ResourceAttributes.SERVICE_NAME: name,
+                ResourceAttributes.SERVICE_VERSION: version,
+            }
+        )
+    )
+    #provider = LoggerProvider(resource=Resource.create())
+    provider = LoggerProvider(resource=resource)
     set_logger_provider(provider)
     exporter = ConsoleLogExporter()
     provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
