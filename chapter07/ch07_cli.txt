@@ -1,0 +1,34 @@
+1. 다음 명령 실행 (legacy_inventory.py 파일을 수정할 필요 없음. 5001번 포트)
+OTEL_RESOURCE_ATTRIBUTES="service.name=legacy-inventory, service.version=0.9.1, net.host.name='hostname', net.host.ip='ipconfig getifaddr en0'" \
+ OTEL_TRACES_EXPORTER=console \
+ OTEL_PYTHON_TRACER_PROVIDER=sdk \
+ OTEL_METRICS_EXPORTER=console \
+ OTEL_PYTHON_METER_PROVIDER=sdk \
+ OTEL_LOGS_EXPORTER=console \
+ OTEL_PYTHON_LOGGER_PROVIDER=sdk \
+ OTEL_PROPAGATORS=b3 \
+ opentelemetry-instrument python legacy_inventory.py
+
+
+2. 다음 명령 실행 (a_grocery_store.py로 파일 만들고 수정할 필요 있음. 신규 터미널 창에서 실행.)
+OTEL_RESOURCE_ATTRIBUTES="service.name=a_grocery_store, service.version=0.1.2, net.host.name='hostname', net.host.ip='ipconfig getifaddr en0'" \
+ OTEL_TRACES_EXPORTER=console \
+ OTEL_PYTHON_TRACER_PROVIDER=sdk \
+ OTEL_METRICS_EXPORTER=console \
+ OTEL_PYTHON_METER_PROVIDER=sdk \
+ OTEL_LOGS_EXPORTER=console \
+ OTEL_PYTHON_LOGGER_PROVIDER=sdk \
+ OTEL_PROPAGATORS=b3,tracecontext \
+ opentelemetry-instrument python a_grocery_store.py
+
+
+3. 다음 명령 실행 (a_shopper.py로 파일 만들고 수정할 필요 있음. 신규 터미널 창에서 실행.)
+  a_shopper.py를 실행하명 다른 창에서 리스닝 중인 것도 측정 데이터를 터미널에 표시 함.
+OTEL_RESOURCE_ATTRIBUTES="service.name=a_shopper, service.version=0.1.3, net.host.name='hostname', net.host.ip='ipconfig getifaddr en0'" \
+ OTEL_TRACES_EXPORTER=console \
+ OTEL_PYTHON_TRACER_PROVIDER=sdk \
+ OTEL_METRICS_EXPORTER=console \
+ OTEL_PYTHON_METER_PROVIDER=sdk \
+ OTEL_LOGS_EXPORTER=console \
+ OTEL_PYTHON_LOGGER_PROVIDER=sdk \
+ opentelemetry-instrument python a_shopper.py
